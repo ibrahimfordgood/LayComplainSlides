@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComplainBot - Civic Intelligence Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --text-color: #ffffff;
+            --text-muted: #a1a1aa;
+            --accent-color: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.3);
+            --card-bg: #09090b;
+            --card-border: #27272a;
+            --success-color: #22c55e;
+            --font-main: 'Inter', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        /* Scroll Snap Section */
+        section {
+            height: 100vh;
+            width: 100vw;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem 6rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 5rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            line-height: 1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to bottom right, #fff 30%, var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 2rem;
+            color: #fff;
+            text-align: center;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        /* Bento Grid Layouts */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-template-rows: repeat(12, 1fr);
+            gap: 1.5rem;
+            width: 100%;
+            height: 75vh;
+        }
+
+        .bento-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .bento-card:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .bento-card.center {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .bento-card.center h3 {
+            justify-content: center;
+        }
+
+        /* Specific Grid Spans */
+        .col-span-3 {
+            grid-column: span 3;
+        }
+
+        .col-span-4 {
+            grid-column: span 4;
+        }
+
+        .col-span-6 {
+            grid-column: span 6;
+        }
+
+        .col-span-8 {
+            grid-column: span 8;
+        }
+
+        .col-span-12 {
+            grid-column: span 12;
+        }
+
+        .row-span-3 {
+            grid-row: span 3;
+        }
+
+        .row-span-4 {
+            grid-row: span 4;
+        }
+
+        .row-span-6 {
+            grid-row: span 6;
+        }
+
+        .row-span-8 {
+            grid-row: span 8;
+        }
+
+        .row-span-12 {
+            grid-row: span 12;
+        }
+
+        /* Visual Elements */
+        .glow-text {
+            text-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .stat-number {
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--accent-color);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        .img-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+
+        img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        /* Icons */
+        i.ph {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+        }
+
+        .bento-card.center i.ph {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Diagram Styling */
+        .diagram-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 2rem 0;
+        }
+
+        .node {
+            background: #18181b;
+            border: 1px solid var(--accent-color);
+            color: #fff;
+            padding: 1rem 1.5rem;
+            border-radius: 1rem;
+            text-align: center;
+            box-shadow: 0 0 20px var(--accent-glow);
+            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .node i.ph {
+            font-size: 1.2rem;
+        }
+
+        .arrow {
+            flex-grow: 1;
+            height: 2px;
+            background: linear-gradient(to right, var(--card-border), var(--accent-color), var(--card-border));
+            margin: 0 1rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeIn 0.8s ease forwards;
+            opacity: 0;
+        }
+
+        .delay-1 {
+            animation-delay: 0.1s;
+        }
+
+        .delay-2 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-3 {
+            animation-delay: 0.3s;
+        }
+
+        /* Navigation Dots */
+        .nav-dots {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 100;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: var(--card-border);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: var(--accent-color);
+            box-shadow: 0 0 10px var(--accent-color);
+            transform: scale(1.5);
+        }
+
+        ul {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        li::before {
+            content: "•";
+            color: var(--accent-color);
+            margin-right: 0.5rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation Dots -->
+    <div class="nav-dots" id="navDots"></div>
+
+    <!-- Slide 1: Title -->
+    <section id="slide-1">
+        <div class="tagline animate-in">WhatsApp-Powered Civic Intelligence</div>
+        <h1 class="animate-in delay-1">ComplainBot</h1>
+        <h2 class="animate-in delay-2" style="font-size: 2rem; color: var(--text-muted); font-weight: 400;">Turning
+            Citizen Complaints into Government Priorities</h2>
+    </section>
+
+    <!-- Slide 2: Context -->
+    <section id="slide-2">
+        <h2>The Context</h2>
+        <div class="bento-grid">
+            <div class="bento-card col-span-6 row-span-12 center">
+                <h3>Current State</h3>
+                <p>Citizens report issues via:</p>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <div class="node" style="border-color: var(--card-border);"><i class="ph ph-radio"></i>Radio</div>
+                    <div class="node" style="border-color: var(--card-border);"><i
+                            class="ph ph-facebook-logo"></i>Social Media</div>
+                    <div class="node" style="border-color: var(--card-border);"><i class="ph ph-users-three"></i>Groups
+                    </div>
+                </div>
+            </div>
+            <div class="bento-card col-span-6 row-span-6">
+                <h3><i class="ph ph-trend-up"></i> The Gap</h3>
+                <p>Rising citizen engagement meets a lack of government tools.</p>
+            </div>
+            <div class="bento-card col-span-6 row-span-6">
+                <h3><i class="ph ph-warning-circle"></i> The Result</h3>
+                <p>Lack of structure, tracking, and prioritization.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 3: The Problem -->
+    <section id="slide-3">
+        <h2>The Problem</h2>
+        <div class="bento-grid">
+            <div class="bento-card col-span-4 row-span-6">
+                <h3><i class="ph ph-eye-slash"></i> Blind Spots</h3>
+                <p>Governments cannot see which problems affect the most people.</p>
+            </div>
+            <div class="bento-card col-span-4 row-span-6">
+                <h3><i class="ph ph-chart-bar-horizontal"></i> No Data</h3>
+                <p>No ranked data to guide budgets and repairs.</p>
+            </div>
+            <div class="bento-card col-span-4 row-span-6">
+                <h3><i class="ph ph-fire"></i> Reactive</h3>
+                <p>Decision-making is reactive, not data-driven.</p>
+            </div>
+            <div class="bento-card col-span-12 row-span-6 center">
+                <h3><i class="ph ph-arrows-clockwise"></i> Broken Feedback Loop</h3>
+                <p>No transparent mechanism to inform citizens of progress.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 4: Why This Matters -->
+    <section id="slide-4">
+        <h2>Why This Matters</h2>
+        <div class="bento-grid">
+            <div class="bento-card col-span-4 row-span-12 center">
+                <i class="ph ph-trash" style="color: #ef4444;"></i>
+                <div class="stat-number" style="color: #ef4444;">Waste</div>
+                <div class="stat-label">Poor Prioritization</div>
+                <p style="margin-top: 1rem; text-align: center;">Limited resources are spent inefficiently.</p>
+            </div>
+            <div class="bento-card col-span-4 row-span-12 center">
+                <i class="ph ph-shield-warning" style="color: #f59e0b;"></i>
+                <div class="stat-number" style="color: #f59e0b;">Weak</div>
+                <div class="stat-label">Accountability</div>
+                <p style="margin-top: 1rem; text-align: center;">Lack of data makes it hard to track performance.</p>
+            </div>
+            <div class="bento-card col-span-4 row-span-12 center">
+                <i class="ph ph-handshake" style="color: #64748b;"></i>
+                <div class="stat-number" style="color: #64748b;">Low</div>
+                <div class="stat-label">Public Trust</div>
+                <p style="margin-top: 1rem; text-align: center;">Trust declines without visible response.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 5: Solution Overview -->
+    <section id="slide-5">
+        <h2>The Solution</h2>
+        <div class="diagram-container">
+            <div class="node">
+                <i class="ph ph-whatsapp-logo"></i>
+                <h3>WhatsApp</h3>
+                <small>Intake</small>
+            </div>
+            <div class="arrow"></div>
+            <div class="node" style="border-color: var(--success-color);">
+                <i class="ph ph-brain"></i>
+                <h3>AI Engine</h3>
+                <small>Structure</small>
+            </div>
+            <div class="arrow"></div>
+            <div class="node">
+                <i class="ph ph-desktop"></i>
+                <h3>Dashboard</h3>
+                <small>Priority</small>
+            </div>
+        </div>
+        <div class="bento-grid" style="height: 40vh;">
+            <div class="bento-card col-span-6 row-span-12">
+                <h3><i class="ph ph-robot"></i> Automated Categorization</h3>
+                <p>AI structures unstructured citizen reports.</p>
+            </div>
+            <div class="bento-card col-span-6 row-span-12">
+                <h3><i class="ph ph-list-numbers"></i> Ranked Priorities</h3>
+                <p>Weekly reporting for ministries and MPs.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 6: WhatsApp AI Intake -->
+    <section id="slide-6">
+        <h2>WhatsApp AI Intake</h2>
+        <div class="bento-grid">
+            <div class="bento-card col-span-4 row-span-12">
+                <h3><i class="ph ph-lightning"></i> Frictionless</h3>
+                <ul>
+                    <li><i class="ph ph-check-circle" style="display:inline; font-size:1rem;"></i> No new app required
+                    </li>
+                    <li><i class="ph ph-image" style="display:inline; font-size:1rem;"></i> Text, Photos, Videos</li>
+                    <li><i class="ph ph-microphone" style="display:inline; font-size:1rem;"></i> Voice Notes supported
+                    </li>
+                    <li><i class="ph ph-clock" style="display:inline; font-size:1rem;"></i> Real-time AI processing</li>
+                </ul>
+            </div>
+            <div class="bento-card col-span-8 row-span-12 center" style="padding: 0;">
+                <div class="img-wrapper">
+                    <img src="assets/whatsapp.png" alt="WhatsApp Interface">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 7: AI Processing (Updated with Krio NLP) -->
+    <section id="slide-7">
+        <h2>AI Intelligence Layer</h2>
+        <div class="bento-grid">
+            <div class="bento-card col-span-4 row-span-6">
+                <h3><i class="ph ph-translate"></i> Krio NLP</h3>
+                <p>Understands local dialect and voice notes.</p>
+            </div>
+            <div class="bento-card col-span-4 row-span-6">
+                <h3><i class="ph ph-target"></i> Intent</h3>
+                <p>Detects: New Complaint, Upvote, or Help.</p>
+            </div>
+            <div class="bento-card col-span-4 row-span-6">
+                <h3><i class="ph ph-file-text"></i> Extraction</h3>
+                <p>Auto-extracts Title, Location, and Category.</p>
+            </div>
+            <div class="bento-card col-span-6 row-span-6">
+                <h3><i class="ph ph-tag"></i> Tagging</h3>
+                <p>Routes to correct Ministry and Sector.</p>
+            </div>
+            <div class="bento-card col-span-6 row-span-6">
+                <h3><i class="ph ph-copy"></i> Deduplication</h3>
+                <p>Merges duplicate reports to find true priority.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 8: System Architecture (New) -->
+    <section id="slide-8">
+        <h2>System Architecture</h2>
+        <div class="diagram-container" style="margin-top: 4rem;">
+            <div class="node">
+                <i class="ph ph-user"></i>
+                <h3>Citizen</h3>
+                <small>WhatsApp Voice/Text</small>
+            </div>
+            <div class="arrow"></div>
+            <div class="node" style="border-color: var(--accent-color);">
+                <i class="ph ph-translate"></i>
+                <h3>Krio NLP</h3>
+                <small>Transcribe & Translate</small>
+            </div>
+            <div class="arrow"></div>
+            <div class="node" style="border-color: var(--success-color);">
+                <i class="ph ph-brain"></i>
+                <h3>AI Agent</h3>
+                <small>Categorize & Validate</small>
+            </div>
+            <div class="arrow"></div>
+            <div class="node">
+                <i class="ph ph-database"></i>
+                <h3>Database</h3>
+                <small>Store & Index</small>
+            </div>
+            <div class="arrow"></div>
+            <div class="node">
+                <i class="ph ph-desktop"></i>
+                <h3>Dashboard</h3>
+                <small>Ministry View</small>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 9: Web Dashboard -->
+    <section id="slide-9">
+        <h2>Web Dashboard</h2>
+        <div class="bento-grid">
+            <div class="bento-card col-span-8 row-span-12 center" style="padding: 0;">
+                <div class="img-wrapper">
+                    <img src="assets/dashboard.png" alt="Dashboard Interface">
+                </div>
+            </div>
+            <div class="bento-card col-span-4 row-span-12">
+                <h3><i class="ph ph-sliders-horizontal"></i> Features</h3>
+                <ul>
+                    <li>Live complaint feed</li>
+                    <li>Upvote-based ranking</li>
+                    <li>Weekly "Top Issues" report</li>
+                    <li>Admin verification</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 10: Value to Government -->
+    <section id="slide-10">
+        <h2>Value to Government</h2>
+        <div class="bento-grid">
+            <div class="bento-card col-span-6 row-span-6">
+                <h3><i class="ph ph-list-checks"></i> Clear Priorities</h3>
+                <p>Ranked list of issues per constituency.</p>
+            </div>
+            <div class="bento-card col-span-6 row-span-6">
+                <h3><i class="ph ph-chart-line-up"></i> Data-Backed</h3>
+                <p>Evidence for budget requests and reports.</p>
+            </div>
+            <div class="bento-card col-span-6 row-span-6">
+                <h3><i class="ph ph-funnel"></i> High Signal</h3>
+                <p>Reduced noise, focused on verified problems.</p>
+            </div>
+            <div class="bento-card col-span-6 row-span-6">
+                <h3><i class="ph ph-strategy"></i> Decision Making</h3>
+                <p>Move from reactive to strategic planning.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 11: Value to Citizens -->
+    <section id="slide-11">
+        <h2>Value to Citizens</h2>
+        <div class="bento-grid">
+            <div class="bento-card col-span-4 row-span-12 center">
+                <i class="ph ph-smiley"></i>
+                <h3>Simple</h3>
+                <p>Report via WhatsApp.</p>
+            </div>
+            <div class="bento-card col-span-4 row-span-12 center">
+                <i class="ph ph-eye"></i>
+                <h3>Visible</h3>
+                <p>See impact through upvotes.</p>
+            </div>
+            <div class="bento-card col-span-4 row-span-12 center">
+                <i class="ph ph-shield-check"></i>
+                <h3>Trusted</h3>
+                <p>Transparency builds confidence.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 12: Business Model -->
+    <section id="slide-12">
+        <h2>Business Model</h2>
+        <div class="bento-grid">
+            <div class="bento-card col-span-12 row-span-4 center">
+                <h3><i class="ph ph-credit-card"></i> Subscription Model</h3>
+                <p>For MPs, Local Councils, and Ministries.</p>
+            </div>
+            <div class="bento-card col-span-4 row-span-8">
+                <h3><i class="ph ph-star"></i> Core</h3>
+                <p>Monthly/Annual fee per constituency.</p>
+            </div>
+            <div class="bento-card col-span-4 row-span-8">
+                <h3><i class="ph ph-lock-key-open"></i> Access</h3>
+                <p>Full dashboard, weekly reports, analytics.</p>
+            </div>
+            <div class="bento-card col-span-4 row-span-8">
+                <h3><i class="ph ph-plus-circle"></i> Add-Ons</h3>
+                <p>Custom verification and deep-dive reports.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 13: Pricing Logic -->
+    <section id="slide-13">
+        <h2>Pricing Logic</h2>
+        <div class="bento-grid">
+            <div class="bento-card col-span-6 row-span-12 center">
+                <div class="stat-number">
+                    < 1%</div>
+                        <div class="stat-label">Of Infrastructure Budget</div>
+                        <p style="margin-top: 1rem;">Low cost relative to the value of data.</p>
+                </div>
+                <div class="bento-card col-span-6 row-span-6">
+                    <h3><i class="ph ph-chart-bar"></i> Predictable</h3>
+                    <p>Recurring revenue ensures platform sustainability.</p>
+                </div>
+                <div class="bento-card col-span-6 row-span-6">
+                    <h3><i class="ph ph-arrows-out"></i> Scalable</h3>
+                    <p>Grows by number of constituencies covered.</p>
+                </div>
+            </div>
+    </section>
+
+    <!-- Slide 14: Traction -->
+    <section id="slide-14">
+        <h2>Traction & Status</h2>
+        <div class="bento-grid">
+            <div class="bento-card col-span-3 row-span-12 center">
+                <div class="node" style="border-color: var(--success-color);"><i class="ph ph-whatsapp-logo"></i> Live
+                </div>
+                <p style="margin-top: 1rem;">WhatsApp Bot</p>
+            </div>
+            <div class="bento-card col-span-3 row-span-12 center">
+                <div class="node" style="border-color: var(--success-color);"><i class="ph ph-gear"></i> Operational
+                </div>
+                <p style="margin-top: 1rem;">AI Agent</p>
+            </div>
+            <div class="bento-card col-span-3 row-span-12 center">
+                <div class="node" style="border-color: var(--success-color);"><i class="ph ph-globe"></i> Deployed</div>
+                <p style="margin-top: 1rem;">Web Dashboard</p>
+            </div>
+            <div class="bento-card col-span-3 row-span-12 center">
+                <div class="node" style="border-color: var(--accent-color);"><i class="ph ph-rocket"></i> Ready</div>
+                <p style="margin-top: 1rem;">Pilot Launch</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 15: GTM Strategy -->
+    <section id="slide-15">
+        <h2>Go-To-Market</h2>
+        <div class="diagram-container">
+            <div class="node">
+                <i class="ph ph-number-one"></i>
+                <h3>Pilot</h3>
+                <small>Constituencies</small>
+            </div>
+            <div class="arrow"></div>
+            <div class="node">
+                <i class="ph ph-number-two"></i>
+                <h3>Partner</h3>
+                <small>Councils/NGOs</small>
+            </div>
+            <div class="arrow"></div>
+            <div class="node">
+                <i class="ph ph-number-three"></i>
+                <h3>Expand</h3>
+                <small>MPs/Ministries</small>
+            </div>
+            <div class="arrow"></div>
+            <div class="node" style="border-color: var(--accent-color);">
+                <i class="ph ph-number-four"></i>
+                <h3>National</h3>
+                <small>Rollout</small>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 16: Long-Term Impact -->
+    <section id="slide-16">
+        <h2>Long-Term Impact</h2>
+        <div class="bento-grid">
+            <div class="bento-card col-span-6 row-span-6">
+                <h3><i class="ph ph-coins"></i> Smarter Spending</h3>
+                <p>Budgets aligned with real citizen needs.</p>
+            </div>
+            <div class="bento-card col-span-6 row-span-6">
+                <h3><i class="ph ph-timer"></i> Faster Response</h3>
+                <p>Reduced time from report to resolution.</p>
+            </div>
+            <div class="bento-card col-span-6 row-span-6">
+                <h3><i class="ph ph-hand-heart"></i> Stronger Trust</h3>
+                <p>Rebuilding the citizen-government contract.</p>
+            </div>
+            <div class="bento-card col-span-6 row-span-6">
+                <h3><i class="ph ph-buildings"></i> Policy Foundation</h3>
+                <p>Data layer for future urban planning.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 17: The Team (New) -->
+    <section id="slide-17">
+        <h2>The Team</h2>
+        <div class="bento-grid">
+            <div class="bento-card col-span-4 row-span-12 center">
+                <div class="node"
+                    style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 1rem; justify-content: center; font-size: 2rem;">
+                    EK</div>
+                <h3>Emmanuel Keifala</h3>
+                <p>Team Member</p>
+            </div>
+            <div class="bento-card col-span-4 row-span-12 center">
+                <div class="node"
+                    style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 1rem; justify-content: center; font-size: 2rem;">
+                    AS</div>
+                <h3>Alusine Swaray</h3>
+                <p>Team Member</p>
+            </div>
+            <div class="bento-card col-span-4 row-span-12 center">
+                <div class="node"
+                    style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 1rem; justify-content: center; font-size: 2rem;">
+                    IS</div>
+                <h3>Ibrahim Sesay</h3>
+                <p>Team Member</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 18: Call to Action -->
+    <section id="slide-18">
+        <h1 class="glow-text">Let's Solve Problems.</h1>
+        <div class="bento-grid" style="height: auto; margin-top: 4rem; width: 80%;">
+            <div class="bento-card col-span-4 row-span-12 center">
+                <i class="ph ph-rocket-launch"></i>
+                <h3>Launch Pilot</h3>
+                <p>Selected Constituencies</p>
+            </div>
+            <div class="bento-card col-span-4 row-span-12 center">
+                <i class="ph ph-user-plus"></i>
+                <h3>Subscribe</h3>
+                <p>MPs & Dashboards</p>
+            </div>
+            <div class="bento-card col-span-4 row-span-12 center">
+                <i class="ph ph-users"></i>
+                <h3>Collaborate</h3>
+                <p>National Rollout</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Generate Nav Dots
+        const sections = document.querySelectorAll('section');
+        const navDots = document.getElementById('navDots');
+
+        sections.forEach((section, index) => {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            dot.title = `Slide ${index + 1}`;
+            dot.addEventListener('click', () => {
+                section.scrollIntoView({ behavior: 'smooth' });
+            });
+            navDots.appendChild(dot);
+        });
+
+        // Intersection Observer for Animations & Dots
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Update Dots
+                    const index = Array.from(sections).indexOf(entry.target);
+                    document.querySelectorAll('.dot').forEach((d, i) => {
+                        d.classList.toggle('active', i === index);
+                    });
+
+                    // Trigger Animations
+                    entry.target.querySelectorAll('.animate-in').forEach(el => {
+                        el.style.animationPlayState = 'running';
+                    });
+                }
+            });
+        }, { threshold: 0.5 });
+
+        sections.forEach(section => observer.observe(section));
+    </script>
+</body>
+
+</html>
